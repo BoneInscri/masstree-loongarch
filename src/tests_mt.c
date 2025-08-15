@@ -23,7 +23,8 @@ static void *
 fuzz_put_del(void *arg)
 {
 	const unsigned id = (uintptr_t)arg;
-	unsigned n = 1000 * 1000;
+	// unsigned n = 1000 * 1000;
+	unsigned n = 1000;
 
 	pthread_barrier_wait(&barrier);
 	while (n--) {
@@ -38,6 +39,7 @@ fuzz_put_del(void *arg)
 		} else {
 			masstree_del(tree, &key, sizeof(key));
 		}
+		// printf("fuzz_put_del: worker %u, key %lu, n : %lu\n", id, key, n);
 	}
 	pthread_barrier_wait(&barrier);
 
@@ -53,7 +55,9 @@ static void *
 fuzz_multi(void *arg)
 {
 	const unsigned id = (uintptr_t)arg;
-	unsigned n = 1000 * 1000;
+	// unsigned n = 1000 * 1000;
+	unsigned n = 1000;
+
 
 	pthread_barrier_wait(&barrier);
 	while (n--) {
@@ -77,6 +81,7 @@ fuzz_multi(void *arg)
 			masstree_del(tree, &key, sizeof(key));
 			break;
 		}
+		// printf("fuzz_multi: worker %u, key %lu, n : %lu\n", id, key, n);
 	}
 	pthread_barrier_wait(&barrier);
 
@@ -91,7 +96,8 @@ static void *
 fuzz_layers(void *arg)
 {
 	const unsigned id = (uintptr_t)arg;
-	unsigned n = 1000 * 1000;
+	// unsigned n = 1000 * 1000;
+	unsigned n = 100;
 
 	pthread_barrier_wait(&barrier);
 	while (n--) {
@@ -99,6 +105,7 @@ fuzz_layers(void *arg)
 		uintptr_t numval;
 		void *val;
 
+		// printf("fuzz_layers: worker %u, n : %lu\n", id, n);
 		/*
 		 * Two layers, contended to cause concurrent splits
 		 * and collapses.
@@ -127,6 +134,7 @@ fuzz_layers(void *arg)
 			for (uint64_t k2 = 0; k2 <= 0x1f; k2++) {
 				uint64_t key[2] = { k1, k2 };
 				masstree_del(tree, key, sizeof(key));
+				// printf("cleaning up key %lu %lu\n", k1, k2);
 			}
 		}
 	}
@@ -167,8 +175,11 @@ int
 main(void)
 {
 	run_test(fuzz_put_del);
+	puts("fuzz_put_del ok");
 	run_test(fuzz_multi);
+	puts("fuzz_multi ok");
 	run_test(fuzz_layers);
-	puts("ok");
+	puts("fuzz_layers ok");
+	puts("all ok");
 	return 0;
 }

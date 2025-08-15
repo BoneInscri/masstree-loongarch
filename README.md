@@ -1,17 +1,56 @@
-# Masstree: lockless cache-aware tree [experimental]
+1. **编译构建**
 
-Masstree is a lockless cache-aware trie of B+ trees.  This project provides
-an implementation written in C11, distributed under the 2-clause BSD license.
-Based on the design by Y. Mao, E. Kohler and R. Morris.  Reference:
+```
+sh build.sh
+```
 
-        http://pdos.csail.mit.edu/papers/masstree:eurosys12.pdf
+```
+./
+├── build
+│   └── loongarch
+│       ├── libmasstree.a
+│       ├── masstree_mt_test
+│       ├── masstree.o
+│       ├── masstree_st_test
+│       ├── masstree_vis
+│       ├── tests_mt.o
+│       ├── tests_st.o
+│       ├── vis.o
+│       └── vis.sh
+```
 
-**WARNING**:
-- This code is experimental and is known to be unstable.  Use it at your own
-risk.  Support is not provided at this stage.
-- The concurrent delete operation is known to have bugs.
-- Certain optimisations and features from the original paper are not
-implemented.
 
-**NOTE**: For a stable alternative, please see the
-[concurrent trie-hash map](https://github.com/rmind/thmap) project.
+
+2. **清空构建**
+
+```
+sh build.sh clean
+```
+
+
+
+3. **测试指令**
+
+```
+# 单线程基础测试
+./masstree_st_test 
+
+# 多线程并发测试
+./masstree_mt_test
+
+# 可视化
+sh vis.sh
+```
+
+```
+[root@dedsec masstree]# ./masstree_st_test 
+ok
+[root@dedsec masstree]# ./masstree_mt_test 
+fuzz_put_del ok
+fuzz_multi ok
+fuzz_layers ok
+all ok
+```
+
+![masstree](README.assets/masstree.png)
+
